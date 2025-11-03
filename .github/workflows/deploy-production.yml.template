@@ -1,0 +1,107 @@
+# TEMPLATE: Deployment workflow for production environment
+# To use: Rename to deploy-production.yml and configure secrets in GitHub
+# IMPORTANT: This requires manual approval for safety
+
+name: Deploy to Production
+
+on:
+  workflow_dispatch:  # Manual trigger only
+    inputs:
+      confirm:
+        description: 'Type "deploy" to confirm production deployment'
+        required: true
+
+jobs:
+  validate-input:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "deploy" ]; then
+            echo "❌ Invalid confirmation. Must type 'deploy' to proceed."
+            exit 1
+          fi
+
+  deploy-production:
+    needs: validate-input
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://app.cernio.com  # Your production URL
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate --workspace=apps/backend
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build backend
+        run: npm run build --workspace=apps/backend
+
+      - name: Build frontend
+        run: npm run build --workspace=apps/web
+        env:
+          VITE_API_URL: ${{ secrets.PRODUCTION_API_URL }}
+
+      # ===================================
+      # Database Migrations
+      # ===================================
+      - name: Run database migrations
+        run: npm run prisma:migrate:deploy --workspace=apps/backend
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+
+      # ===================================
+      # Deploy Backend (same options as staging)
+      # ===================================
+      # Uncomment and configure based on your hosting choice
+      # See deploy-staging.yml.template for examples
+
+      # ===================================
+      # Deploy Frontend (same options as staging)
+      # ===================================
+      # Uncomment and configure based on your hosting choice
+      # See deploy-staging.yml.template for examples
+
+      - name: Deployment summary
+        run: |
+          echo "✅ Production deployment completed!"
+          echo "Backend: ${{ secrets.PRODUCTION_API_URL }}"
+          echo "Frontend: https://app.cernio.com"
+          echo "Commit: ${{ github.sha }}"
+          echo "Deployed by: ${{ github.actor }}"
+
+      # ===================================
+      # Post-Deployment Tasks
+      # ===================================
+      - name: Notify team (optional)
+        run: |
+          echo "Send Slack/Discord notification here"
+          # curl -X POST -H 'Content-type: application/json' \
+          #   --data '{"text":"✅ Production deployed: ${{ github.sha }}"}' \
+          #   ${{ secrets.SLACK_WEBHOOK_URL }}
+
+# ===================================
+# Required GitHub Secrets (Production)
+# ===================================
+# Add these in: Settings > Secrets and variables > Actions
+#
+# PRODUCTION_DATABASE_URL
+# PRODUCTION_API_URL
+# (Plus hosting provider secrets - same as staging)
+#
+# Optional:
+# SLACK_WEBHOOK_URL or DISCORD_WEBHOOK_URL

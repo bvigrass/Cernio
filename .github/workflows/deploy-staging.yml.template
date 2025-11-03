@@ -1,0 +1,140 @@
+# TEMPLATE: Deployment workflow for staging environment
+# To use: Rename to deploy-staging.yml and configure secrets in GitHub
+# Required secrets: See comments below
+
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate --workspace=apps/backend
+
+      - name: Build backend
+        run: npm run build --workspace=apps/backend
+
+      - name: Build frontend
+        run: npm run build --workspace=apps/web
+        env:
+          VITE_API_URL: ${{ secrets.STAGING_API_URL }}
+
+      # ===================================
+      # Database Migrations
+      # ===================================
+      - name: Run database migrations
+        run: npm run prisma:migrate:deploy --workspace=apps/backend
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+
+      # ===================================
+      # Deploy Backend
+      # ===================================
+      # Option 1: Deploy to AWS ECS/EKS
+      # - name: Deploy backend to AWS
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
+
+      # Option 2: Deploy to Google Cloud Run
+      # - name: Deploy backend to GCP
+      #   uses: google-github-actions/deploy-cloudrun@v2
+      #   with:
+      #     service: cernio-api-staging
+      #     image: gcr.io/project/cernio-api:${{ github.sha }}
+
+      # Option 3: Deploy to Heroku
+      # - name: Deploy backend to Heroku
+      #   uses: akhileshns/heroku-deploy@v3.12.14
+      #   with:
+      #     heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+      #     heroku_app_name: cernio-api-staging
+      #     heroku_email: ${{ secrets.HEROKU_EMAIL }}
+
+      # ===================================
+      # Deploy Frontend
+      # ===================================
+      # Option 1: Deploy to Vercel
+      # - name: Deploy frontend to Vercel
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     vercel-args: '--prod'
+
+      # Option 2: Deploy to Netlify
+      # - name: Deploy frontend to Netlify
+      #   uses: nwtgck/actions-netlify@v2.1
+      #   with:
+      #     publish-dir: './apps/web/dist'
+      #     production-deploy: true
+      #   env:
+      #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #     NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      # Option 3: Deploy to AWS S3 + CloudFront
+      # - name: Deploy frontend to S3
+      #   run: aws s3 sync ./apps/web/dist s3://cernio-staging --delete
+      # - name: Invalidate CloudFront cache
+      #   run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DIST_ID }} --paths "/*"
+
+      - name: Deployment summary
+        run: |
+          echo "✅ Staging deployment completed!"
+          echo "Backend: [Your staging API URL]"
+          echo "Frontend: [Your staging web URL]"
+          echo "Commit: ${{ github.sha }}"
+
+# ===================================
+# Required GitHub Secrets
+# ===================================
+# Add these in: Settings > Secrets and variables > Actions
+#
+# STAGING_DATABASE_URL - PostgreSQL connection string
+# STAGING_API_URL - Backend API URL for frontend
+#
+# Choose ONE deployment option and configure:
+#
+# For AWS:
+#   AWS_ACCESS_KEY_ID
+#   AWS_SECRET_ACCESS_KEY
+#   CLOUDFRONT_DIST_ID (if using S3+CloudFront)
+#
+# For GCP:
+#   GCP_PROJECT_ID
+#   GCP_SERVICE_ACCOUNT_KEY
+#
+# For Heroku:
+#   HEROKU_API_KEY
+#   HEROKU_EMAIL
+#
+# For Vercel:
+#   VERCEL_TOKEN
+#   VERCEL_ORG_ID
+#   VERCEL_PROJECT_ID
+#
+# For Netlify:
+#   NETLIFY_AUTH_TOKEN
+#   NETLIFY_SITE_ID
