@@ -1,6 +1,6 @@
 # Open Issues & Decisions Needed
 
-**Last Updated:** 2025-11-03  
+**Last Updated:** 2025-11-03 (Phase 0 COMPLETED - 3 architectural decisions resolved)
 **Status Key:** 🔴 Blocker | 🟡 Important | 🟢 Nice-to-have | ✅ Resolved
 
 ---
@@ -39,96 +39,27 @@
 
 ---
 
-### TA-002: Monorepo vs Multi-Repo 🟡
-**Status:** Open  
-**Decision Needed By:** Week 1  
-**Impact:** Development workflow, CI/CD complexity
-
-**Options:**
-1. **Monorepo** (single repo for all code)
-   - Tools: Nx, Turborepo, or Lerna
-   - ✅ Easier code sharing (types, utilities)
-   - ✅ Atomic commits across frontend/backend
-   - ✅ Simpler dependency management
-   - ❌ Large repo size
-   - ❌ Requires tooling to manage
-
-2. **Multi-Repo** (separate repos)
-   - ✅ Clear separation of concerns
-   - ✅ Independent versioning
-   - ❌ Harder to share code
-   - ❌ Version drift between services
-
-**Recommendation:** Monorepo with Nx or Turborepo. Benefits outweigh costs for MVP scale.
-
-**Action Items:**
-- [ ] Prototype with Nx workspace
-- [ ] Test build times with sample project
-- [ ] Decision by: 2025-11-10
+### TA-002: Monorepo vs Multi-Repo ✅
+**Status:** RESOLVED
+**Decision:** Monorepo with npm workspaces
+**Date:** 2025-11-03
+**Rationale:** Using native npm workspaces for simplicity. Provides code sharing benefits without additional tooling complexity. Can migrate to Nx/Turborepo later if build performance becomes an issue.
 
 ---
 
-### TA-003: ORM Choice (TypeORM vs Prisma) 🟡
-**Status:** Open  
-**Decision Needed By:** Week 2  
-**Impact:** Developer experience, migration workflow
-
-**Options:**
-1. **TypeORM**
-   - ✅ Mature, battle-tested
-   - ✅ Native NestJS integration
-   - ✅ Active Record or Data Mapper patterns
-   - ❌ Complex migrations
-   - ❌ Less type-safe
-
-2. **Prisma**
-   - ✅ Excellent TypeScript support
-   - ✅ Great DX (developer experience)
-   - ✅ Simpler migration workflow
-   - ✅ Better type safety
-   - ❌ Newer (less mature)
-   - ❌ Generates large client
-
-**Recommendation:** Prisma for better DX and type safety. Worth the tradeoff.
-
-**Action Items:**
-- [ ] Build POC with both ORMs
-- [ ] Test migration workflow
-- [ ] Evaluate bundle size impact
-- [ ] Decision by: 2025-11-17
+### TA-003: ORM Choice (TypeORM vs Prisma) ✅
+**Status:** RESOLVED
+**Decision:** Prisma
+**Date:** 2025-11-03
+**Rationale:** Excellent TypeScript support and type safety. Simpler migration workflow perfect for rapid MVP development. Schema-first approach similar to Entity Framework from .NET. Generated Prisma Client provides full type safety across the application. Migration system is production-ready.
 
 ---
 
-### TA-004: State Management (React) 🟢
-**Status:** Open  
-**Decision Needed By:** Week 3  
-**Impact:** Frontend complexity, performance
-
-**Options:**
-1. **React Context + useReducer** (built-in)
-   - ✅ No dependencies
-   - ✅ Simple for MVP
-   - ❌ Performance issues at scale
-   - ❌ No dev tools
-
-2. **Zustand** (lightweight)
-   - ✅ Minimal boilerplate
-   - ✅ Good performance
-   - ✅ Simple API
-   - ❌ Less mature than Redux
-
-3. **Redux Toolkit**
-   - ✅ Industry standard
-   - ✅ Excellent dev tools
-   - ✅ Large ecosystem
-   - ❌ More boilerplate
-   - ❌ Overkill for MVP?
-
-**Recommendation:** Start with Zustand. Easy to migrate to Redux later if needed.
-
-**Action Items:**
-- [ ] Prototype auth state with Zustand
-- [ ] Decision by: 2025-11-24
+### TA-004: State Management (React) ✅
+**Status:** RESOLVED
+**Decision:** Zustand
+**Date:** 2025-11-03
+**Rationale:** Lightweight with minimal boilerplate, perfect for MVP. Good performance without the complexity of Redux. Easy to migrate to Redux Toolkit later if application complexity demands it.
 
 ---
 
@@ -697,24 +628,39 @@
 ## Decision Log (Resolved Issues)
 
 ### ✅ RESOLVED: Programming Language Choice
-**Decision:** TypeScript for entire stack  
-**Date:** 2025-11-03  
+**Decision:** TypeScript for entire stack
+**Date:** 2025-11-03
 **Rationale:** Type safety, shared types between frontend/backend, better developer experience
 
 ### ✅ RESOLVED: Frontend Framework
-**Decision:** React (not Vue or Angular)  
-**Date:** 2025-11-03  
+**Decision:** React (not Vue or Angular)
+**Date:** 2025-11-03
 **Rationale:** Largest ecosystem, easier hiring, can reuse for React Native mobile
 
 ### ✅ RESOLVED: Backend Framework
-**Decision:** NestJS (not Express, Fastify, or Koa)  
-**Date:** 2025-11-03  
+**Decision:** NestJS (not Express, Fastify, or Koa)
+**Date:** 2025-11-03
 **Rationale:** Opinionated structure, TypeScript-native, great for teams, built-in modules
 
 ### ✅ RESOLVED: Database Choice
-**Decision:** PostgreSQL (not MySQL, MongoDB)  
-**Date:** 2025-11-03  
+**Decision:** PostgreSQL (not MySQL, MongoDB)
+**Date:** 2025-11-03
 **Rationale:** Relational data model fits well, JSONB for flexibility, excellent JSON support
+
+### ✅ RESOLVED: TA-002 - Monorepo vs Multi-Repo
+**Decision:** Monorepo with npm workspaces
+**Date:** 2025-11-03
+**Rationale:** Using native npm workspaces for simplicity. Provides code sharing benefits (types, utils) without additional tooling complexity. Can migrate to Nx/Turborepo later if build performance becomes an issue.
+
+### ✅ RESOLVED: TA-004 - State Management (React)
+**Decision:** Zustand
+**Date:** 2025-11-03
+**Rationale:** Lightweight with minimal boilerplate, perfect for MVP. Good performance without the complexity of Redux. Easy to migrate to Redux Toolkit later if application complexity demands it.
+
+### ✅ RESOLVED: TA-003 - ORM Choice (TypeORM vs Prisma)
+**Decision:** Prisma
+**Date:** 2025-11-03
+**Rationale:** Excellent TypeScript support and type safety. Simpler migration workflow perfect for rapid MVP development. Schema-first approach similar to Entity Framework from .NET. Generated Prisma Client provides full type safety across the application. Migration system is production-ready. User has .NET background and Prisma's approach is more familiar.
 
 ---
 
@@ -738,3 +684,4 @@
 ---
 
 **Document Owner:** Product & Engineering Leadership
+**Decisions Resolved:** 7 total (4 foundational + 3 architectural)

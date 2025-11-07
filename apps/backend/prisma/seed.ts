@@ -23,48 +23,51 @@ async function main() {
   // Create test users
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  const adminUser = await prisma.user.create({
+  // System Admin (SuperAdmin - you)
+  const systemAdmin = await prisma.user.create({
+    data: {
+      email: 'superadmin@cernio.com',
+      password: hashedPassword,
+      firstName: 'Super',
+      lastName: 'Admin',
+      role: UserRole.SYSTEM_ADMIN,
+      companyId: company.id, // Still needs a company reference for schema consistency
+    },
+  });
+  console.log(`✅ Created system admin: ${systemAdmin.email}`);
+
+  // Company Admin (Tenant Admin)
+  const companyAdmin = await prisma.user.create({
     data: {
       email: 'admin@demo.com',
       password: hashedPassword,
-      firstName: 'Admin',
-      lastName: 'User',
+      firstName: 'Company',
+      lastName: 'Admin',
       role: UserRole.COMPANY_ADMIN,
       companyId: company.id,
     },
   });
-  console.log(`✅ Created admin user: ${adminUser.email}`);
+  console.log(`✅ Created company admin: ${companyAdmin.email}`);
 
-  const pmUser = await prisma.user.create({
+  // Regular User
+  const regularUser = await prisma.user.create({
     data: {
-      email: 'pm@demo.com',
+      email: 'user@demo.com',
       password: hashedPassword,
-      firstName: 'Project',
-      lastName: 'Manager',
-      role: UserRole.PROJECT_MANAGER,
+      firstName: 'Regular',
+      lastName: 'User',
+      role: UserRole.USER,
       companyId: company.id,
     },
   });
-  console.log(`✅ Created PM user: ${pmUser.email}`);
-
-  const fieldWorker = await prisma.user.create({
-    data: {
-      email: 'worker@demo.com',
-      password: hashedPassword,
-      firstName: 'Field',
-      lastName: 'Worker',
-      role: UserRole.FIELD_WORKER,
-      companyId: company.id,
-    },
-  });
-  console.log(`✅ Created field worker: ${fieldWorker.email}`);
+  console.log(`✅ Created regular user: ${regularUser.email}`);
 
   console.log('✨ Seeding completed!');
   console.log('');
-  console.log('Test credentials:');
-  console.log('  Admin:   admin@demo.com / password123');
-  console.log('  PM:      pm@demo.com / password123');
-  console.log('  Worker:  worker@demo.com / password123');
+  console.log('Test credentials (all passwords: password123):');
+  console.log('  SuperAdmin:     superadmin@cernio.com / password123');
+  console.log('  Company Admin:  admin@demo.com / password123');
+  console.log('  Regular User:   user@demo.com / password123');
 }
 
 main()

@@ -7,6 +7,7 @@ import {
   Get,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -16,6 +17,13 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @Get('check-email')
+  @HttpCode(HttpStatus.OK)
+  async checkEmail(@Query('email') email: string) {
+    const available = await this.authService.isEmailAvailable(email);
+    return { available };
+  }
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)

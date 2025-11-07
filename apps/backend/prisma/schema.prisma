@@ -50,11 +50,9 @@ model User {
 }
 
 enum UserRole {
-  SYSTEM_ADMIN
-  COMPANY_ADMIN
-  PROJECT_MANAGER
-  FIELD_WORKER
-  ACCOUNTANT
+  SYSTEM_ADMIN   // SuperAdmin - access all companies
+  COMPANY_ADMIN  // Tenant admin - full control of their company
+  USER           // General user - standard permissions
 }
 
 model Session {

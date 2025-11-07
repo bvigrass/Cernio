@@ -19,6 +19,16 @@ export class AuthService {
   ) {}
 
   /**
+   * Check if an email is available for registration
+   */
+  async isEmailAvailable(email: string): Promise<boolean> {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    return !existingUser;
+  }
+
+  /**
    * Register a new user and company
    * First user automatically becomes COMPANY_ADMIN
    */
