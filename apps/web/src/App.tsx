@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import ClientsPage from './pages/ClientsPage';
+import ClientFormPage from './pages/ClientFormPage';
 
 function App() {
   return (
@@ -26,6 +28,9 @@ function App() {
         }
       >
         <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="clients" element={<ClientsPage />} />
+        <Route path="clients/new" element={<ClientFormPage />} />
+        <Route path="clients/:id/edit" element={<ClientFormPage />} />
         {/* More protected routes will be added here */}
       </Route>
 

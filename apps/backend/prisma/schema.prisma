@@ -23,6 +23,7 @@ model Company {
   // Relations
   users        User[]
   auditEvents  AuditEvent[]
+  clients      Client[]
 
   @@map("companies")
 }
@@ -91,4 +92,51 @@ model AuditEvent {
   @@index([entityType, entityId])
   @@index([createdAt])
   @@map("audit_events")
+}
+
+// ===================================
+// Client Management - Phase 1
+// ===================================
+
+model Client {
+  id             String     @id @default(cuid())
+  companyId      String
+  name           String
+  type           ClientType
+  billingAddress String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // Relations
+  company  Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contacts ClientContact[]
+
+  @@index([companyId])
+  @@index([type])
+  @@map("clients")
+}
+
+enum ClientType {
+  RESIDENTIAL
+  COMMERCIAL
+  INDUSTRIAL
+  MUNICIPAL
+}
+
+model ClientContact {
+  id        String   @id @default(cuid())
+  clientId  String
+  name      String
+  email     String?
+  phone     String?
+  role      String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@map("client_contacts")
 }
