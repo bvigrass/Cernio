@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
 export default function DashboardPage() {
@@ -92,43 +93,95 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Navigation Cards */}
+      <div className="bg-white shadow-sm rounded-lg p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Navigate</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link
+            to="/clients"
+            className="flex flex-col items-center justify-center px-4 py-6 border-2 border-gray-200 rounded-lg shadow-sm text-center bg-white hover:bg-gray-50 hover:border-primary-300 transition-colors"
+          >
+            <svg
+              className="h-8 w-8 text-primary-600 mb-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+            <span className="text-sm font-medium text-gray-900">Clients</span>
+            <span className="text-xs text-gray-500 mt-1">View & manage clients</span>
+          </Link>
+
+          <div className="flex flex-col items-center justify-center px-4 py-6 border-2 border-gray-200 rounded-lg shadow-sm text-center bg-gray-50 cursor-not-allowed opacity-60">
+            <svg
+              className="h-8 w-8 text-gray-400 mb-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <span className="text-sm font-medium text-gray-600">Projects</span>
+            <span className="text-xs text-gray-500 mt-1">Coming soon</span>
+          </div>
+
+          <div className="flex flex-col items-center justify-center px-4 py-6 border-2 border-gray-200 rounded-lg shadow-sm text-center bg-gray-50 cursor-not-allowed opacity-60">
+            <svg
+              className="h-8 w-8 text-gray-400 mb-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+            <span className="text-sm font-medium text-gray-600">Estimates</span>
+            <span className="text-xs text-gray-500 mt-1">Coming soon</span>
+          </div>
+
+          <div className="flex flex-col items-center justify-center px-4 py-6 border-2 border-gray-200 rounded-lg shadow-sm text-center bg-gray-50 cursor-not-allowed opacity-60">
+            <svg
+              className="h-8 w-8 text-gray-400 mb-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <span className="text-sm font-medium text-gray-600">Invoices</span>
+            <span className="text-xs text-gray-500 mt-1">Coming soon</span>
+          </div>
+        </div>
+      </div>
+
       {/* Quick Actions */}
       <div className="bg-white shadow-sm rounded-lg p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <button className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-            <svg
-              className="mr-2 h-5 w-5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            New Project
-          </button>
-          <button className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-            <svg
-              className="mr-2 h-5 w-5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            New Estimate
-          </button>
-          <button className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+          <Link
+            to="/clients/new"
+            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          >
             <svg
               className="mr-2 h-5 w-5 text-gray-400"
               fill="none"
@@ -143,10 +196,51 @@ export default function DashboardPage() {
               />
             </svg>
             New Client
-          </button>
-          <button className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+          </Link>
+          <button
+            disabled
+            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-400 bg-gray-50 cursor-not-allowed"
+          >
             <svg
-              className="mr-2 h-5 w-5 text-gray-400"
+              className="mr-2 h-5 w-5 text-gray-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            New Project
+          </button>
+          <button
+            disabled
+            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-400 bg-gray-50 cursor-not-allowed"
+          >
+            <svg
+              className="mr-2 h-5 w-5 text-gray-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            New Estimate
+          </button>
+          <button
+            disabled
+            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-400 bg-gray-50 cursor-not-allowed"
+          >
+            <svg
+              className="mr-2 h-5 w-5 text-gray-300"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
