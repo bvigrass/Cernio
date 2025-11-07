@@ -4,21 +4,13 @@ import { z } from 'zod';
 import { useAuthStore } from '../store/authStore';
 
 export default function LoginPage() {
-  console.log('🔴🔴🔴 LoginPage COMPONENT RENDERING 🔴🔴🔴');
-  console.log('DEBUG_LOGIN from localStorage:', localStorage.getItem('DEBUG_LOGIN'));
-  console.log('DEBUG_ERROR_MESSAGE from localStorage:', localStorage.getItem('DEBUG_ERROR_MESSAGE'));
-
   const navigate = useNavigate();
   const { login, isLoading, error, clearError } = useAuthStore();
 
-  // Define schema inside component to avoid HMR caching issues
   const loginSchema = z.object({
     email: z.string().email('Invalid email address'),
     password: z.string().min(1, 'Password is required'),
   });
-
-  // Debug: Log schema configuration
-  console.log('LoginPage - Schema defined with password min(1) - Version: 2024-11-07-12:00');
 
   const [formData, setFormData] = useState({
     email: '',
@@ -27,12 +19,8 @@ export default function LoginPage() {
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  // Debug: log when error changes
-  console.log('LoginPage - Current error:', error);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log('handleChange called:', name, value);
     setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear field error on change
     if (formErrors[name]) {
@@ -42,56 +30,35 @@ export default function LoginPage() {
         return newErrors;
       });
     }
-    // Only clear global error if user is actually typing (has some text)
+    // Clear global error when user starts typing
     if (value.length > 0 && error) {
-      console.log('Clearing error because user is typing');
       clearError();
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('=== FORM SUBMIT STARTED ===');
-    console.log('Event:', e);
     e.preventDefault();
-    console.log('preventDefault called');
-    console.log('handleSubmit called with:', formData);
     setFormErrors({});
-    // Don't clear error here - let the login function handle it
 
     // Validate form
     const result = loginSchema.safeParse(formData);
-    console.log('Validation result:', result);
     if (!result.success) {
       const errors: Record<string, string> = {};
       result.error.errors.forEach((err) => {
-        console.log('Validation error:', err.path, err.message);
         if (err.path[0]) {
           errors[err.path[0].toString()] = err.message;
         }
       });
-      console.log('Setting form errors:', errors);
       setFormErrors(errors);
       return;
     }
 
     try {
-      console.log('Calling login...');
       await login(formData);
-      console.log('Login successful, navigating to dashboard');
       navigate('/dashboard');
-    } catch (err: any) {
-      // Error is already set in the store, but log for debugging
-      console.error('Login failed in component:', err.response?.data || err.message);
-      console.error('Full error object:', err);
-      console.log('Error should be displayed now. Current error state:', error);
-
-      // Wait a tick to let Zustand update propagate, then log again
-      setTimeout(() => {
-        console.log('After timeout, error state:', useAuthStore.getState().error);
-      }, 0);
-
-      // Don't clear the form - keep the email so user can try again
-      // Only clear the password for security
+    } catch (err) {
+      // Error is already set in the store
+      // Clear password for security, keep email for convenience
       setFormData(prev => ({ ...prev, password: '' }));
     }
   };
@@ -101,15 +68,9 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div>
-          <h2 className="text-center text-3xl font-extrabold text-red-600">
-            🔥 UPDATED LOGIN PAGE 🔥
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
           </h2>
-          <p className="mt-2 text-center text-sm font-bold text-red-600">
-            PASSWORD VALIDATION: min 1 character only
-          </p>
-          <p className="mt-1 text-center text-xs text-purple-600 font-mono">
-            Version: 2024-11-07-12:00 | Check Console for Debug Info
-          </p>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
             <Link
@@ -122,16 +83,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form
-          className="mt-8 space-y-6"
-          onSubmit={(e) => {
-            console.log('=== FORM onSubmit FIRED ===');
-            e.preventDefault();
-            e.stopPropagation();
-            handleSubmit(e);
-            return false;
-          }}
-        >
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {/* Global Error */}
           {error && (
             <div className="rounded-md bg-red-50 border border-red-200 p-4">
@@ -227,26 +179,13 @@ export default function LoginPage() {
 
           <div>
             <button
-              type="button"
+              type="submit"
               disabled={isLoading}
-              onClick={async () => {
-                try {
-                  console.log('=== BUTTON CLICKED ===');
-                  console.log('Form data:', formData);
-                  console.log('About to call handleSubmit');
-                  await handleSubmit({ preventDefault: () => {}, stopPropagation: () => {} } as any);
-                  console.log('handleSubmit completed');
-                } catch (err) {
-                  console.error('!!! ERROR IN BUTTON CLICK !!!', err);
-                  alert('Error: ' + (err as any).message);
-                }
-              }}
               className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
                 isLoading
                   ? 'bg-primary-400 cursor-not-allowed'
                   : 'bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'
               }`}
-              style={{ pointerEvents: 'auto', cursor: 'pointer', zIndex: 9999 }}
             >
               {isLoading ? (
                 <span className="flex items-center">
