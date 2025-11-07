@@ -99,13 +99,21 @@ model AuditEvent {
 // ===================================
 
 model Client {
-  id             String     @id @default(cuid())
-  companyId      String
-  name           String
-  type           ClientType
-  billingAddress String
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  id        String     @id @default(cuid())
+  companyId String
+  name      String
+  type      ClientType
+
+  // International-friendly address fields
+  street1    String
+  street2    String?
+  city       String
+  state      String  // State/Province/Region
+  postalCode String
+  country    String  @default("United States")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   company  Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)

@@ -56,6 +56,14 @@ export default function ClientsPage() {
     return colors[type];
   };
 
+  const formatAddress = (client: Client) => {
+    const parts = [client.street1];
+    if (client.street2) parts.push(client.street2);
+    parts.push(`${client.city}, ${client.state} ${client.postalCode}`);
+    if (client.country !== 'United States') parts.push(client.country);
+    return parts.join(', ');
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -195,7 +203,7 @@ export default function ClientsPage() {
                   Type
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Billing Address
+                  Address
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Contacts
@@ -224,7 +232,7 @@ export default function ClientsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
-                      {client.billingAddress}
+                      {formatAddress(client)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

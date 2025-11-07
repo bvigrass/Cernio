@@ -7,7 +7,12 @@ import { ClientType, CreateClientContactData } from '../types/client';
 const clientSchema = z.object({
   name: z.string().min(1, 'Client name is required'),
   type: z.nativeEnum(ClientType),
-  billingAddress: z.string().min(1, 'Billing address is required'),
+  street1: z.string().min(1, 'Street address is required'),
+  street2: z.string().optional(),
+  city: z.string().min(1, 'City is required'),
+  state: z.string().min(1, 'State/Province is required'),
+  postalCode: z.string().min(1, 'Postal code is required'),
+  country: z.string().min(1, 'Country is required'),
 });
 
 export default function ClientFormPage() {
@@ -18,7 +23,12 @@ export default function ClientFormPage() {
   const [formData, setFormData] = useState({
     name: '',
     type: ClientType.RESIDENTIAL,
-    billingAddress: '',
+    street1: '',
+    street2: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'United States',
   });
 
   const [contacts, setContacts] = useState<CreateClientContactData[]>([
@@ -42,7 +52,12 @@ export default function ClientFormPage() {
       setFormData({
         name: client.name,
         type: client.type,
-        billingAddress: client.billingAddress,
+        street1: client.street1,
+        street2: client.street2 || '',
+        city: client.city,
+        state: client.state,
+        postalCode: client.postalCode,
+        country: client.country,
       });
       if (client.contacts.length > 0) {
         setContacts(
@@ -263,28 +278,138 @@ export default function ClientFormPage() {
               )}
             </div>
 
-            {/* Billing Address */}
+            {/* Street Address 1 */}
             <div className="md:col-span-2">
               <label
-                htmlFor="billingAddress"
+                htmlFor="street1"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Billing Address *
+                Street Address *
               </label>
-              <textarea
-                id="billingAddress"
-                name="billingAddress"
+              <input
+                id="street1"
+                name="street1"
+                type="text"
                 required
-                rows={3}
-                value={formData.billingAddress}
+                value={formData.street1}
                 onChange={handleChange}
                 className={`appearance-none relative block w-full px-3 py-2 border ${
-                  formErrors.billingAddress ? 'border-red-300' : 'border-gray-300'
+                  formErrors.street1 ? 'border-red-300' : 'border-gray-300'
                 } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm`}
-                placeholder="123 Main St, City, State 12345"
+                placeholder="123 Main Street"
               />
-              {formErrors.billingAddress && (
-                <p className="mt-1 text-sm text-red-600">{formErrors.billingAddress}</p>
+              {formErrors.street1 && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.street1}</p>
+              )}
+            </div>
+
+            {/* Street Address 2 */}
+            <div className="md:col-span-2">
+              <label
+                htmlFor="street2"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Street Address 2 (Optional)
+              </label>
+              <input
+                id="street2"
+                name="street2"
+                type="text"
+                value={formData.street2}
+                onChange={handleChange}
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                placeholder="Suite 100, Unit B, etc."
+              />
+            </div>
+
+            {/* City */}
+            <div>
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                City *
+              </label>
+              <input
+                id="city"
+                name="city"
+                type="text"
+                required
+                value={formData.city}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  formErrors.city ? 'border-red-300' : 'border-gray-300'
+                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm`}
+                placeholder="New York"
+              />
+              {formErrors.city && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.city}</p>
+              )}
+            </div>
+
+            {/* State/Province */}
+            <div>
+              <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
+                State / Province *
+              </label>
+              <input
+                id="state"
+                name="state"
+                type="text"
+                required
+                value={formData.state}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  formErrors.state ? 'border-red-300' : 'border-gray-300'
+                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm`}
+                placeholder="NY"
+              />
+              {formErrors.state && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.state}</p>
+              )}
+            </div>
+
+            {/* Postal Code */}
+            <div>
+              <label
+                htmlFor="postalCode"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Postal Code *
+              </label>
+              <input
+                id="postalCode"
+                name="postalCode"
+                type="text"
+                required
+                value={formData.postalCode}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  formErrors.postalCode ? 'border-red-300' : 'border-gray-300'
+                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm`}
+                placeholder="10001"
+              />
+              {formErrors.postalCode && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.postalCode}</p>
+              )}
+            </div>
+
+            {/* Country */}
+            <div>
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                Country *
+              </label>
+              <input
+                id="country"
+                name="country"
+                type="text"
+                required
+                value={formData.country}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  formErrors.country ? 'border-red-300' : 'border-gray-300'
+                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm`}
+                placeholder="United States"
+              />
+              {formErrors.country && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.country}</p>
               )}
             </div>
           </div>

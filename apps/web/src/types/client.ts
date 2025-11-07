@@ -22,7 +22,12 @@ export interface Client {
   companyId: string;
   name: string;
   type: ClientType;
-  billingAddress: string;
+  street1: string;
+  street2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
   contacts: ClientContact[];
   createdAt: string;
   updatedAt: string;
@@ -39,13 +44,23 @@ export interface CreateClientContactData {
 export interface CreateClientData {
   name: string;
   type: ClientType;
-  billingAddress: string;
+  street1: string;
+  street2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
   contacts?: CreateClientContactData[];
 }
 
 export interface UpdateClientData {
   name?: string;
   type?: ClientType;
-  billingAddress?: string;
+  street1?: string;
+  street2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
   contacts?: CreateClientContactData[];
 }

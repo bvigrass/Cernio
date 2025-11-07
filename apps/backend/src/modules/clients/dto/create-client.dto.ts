@@ -33,7 +33,27 @@ export class CreateClientDto {
 
   @IsString()
   @IsNotEmpty()
-  billingAddress: string;
+  street1: string;
+
+  @IsString()
+  @IsOptional()
+  street2?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  city: string;
+
+  @IsString()
+  @IsNotEmpty()
+  state: string;
+
+  @IsString()
+  @IsNotEmpty()
+  postalCode: string;
+
+  @IsString()
+  @IsNotEmpty()
+  country: string;
 
   @IsArray()
   @ValidateNested({ each: true })
