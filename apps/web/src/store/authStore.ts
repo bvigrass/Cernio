@@ -23,26 +23,35 @@ export const useAuthStore = create<AuthState>((set) => ({
   error: null,
 
   login: async (credentials: LoginCredentials) => {
+    localStorage.setItem('DEBUG_LOGIN', 'Login started');
+    console.log('[AuthStore] Login started, clearing error');
     set({ isLoading: true, error: null });
     try {
+      localStorage.setItem('DEBUG_LOGIN', 'Calling authService.login');
       const response = await authService.login(credentials);
 
       // Store tokens
+      localStorage.setItem('DEBUG_LOGIN', 'Login successful, storing tokens');
       localStorage.setItem('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
 
+      console.log('[AuthStore] Login successful');
       set({
         user: response.user,
         isAuthenticated: true,
         isLoading: false,
         error: null,
       });
+      localStorage.removeItem('DEBUG_LOGIN');
     } catch (error: any) {
+      localStorage.setItem('DEBUG_LOGIN', 'Login error caught');
+
       // Extract error message from various possible formats
       let errorMessage = 'Login failed. Please try again.';
 
-      console.log('Login error caught:', error);
-      console.log('Error response:', error.response);
+      console.log('[AuthStore] Login error caught:', error);
+      console.log('[AuthStore] Error response:', error.response);
+      console.log('[AuthStore] Error response data:', error.response?.data);
 
       if (error.response?.data?.message) {
         // NestJS format: { statusCode, message, error }
@@ -57,7 +66,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         errorMessage = error.message;
       }
 
-      console.log('Setting error message:', errorMessage);
+      localStorage.setItem('DEBUG_ERROR_MESSAGE', errorMessage);
+      console.log('[AuthStore] Setting error message:', errorMessage);
 
       set({
         user: null,
@@ -66,7 +76,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         error: errorMessage,
       });
 
-      console.log('Error state after set:', errorMessage);
+      localStorage.setItem('DEBUG_LOGIN', 'Error set in store: ' + errorMessage);
+      console.log('[AuthStore] Error state after set. Checking store:', useAuthStore.getState().error);
       throw error;
     }
   },

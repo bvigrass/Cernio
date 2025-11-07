@@ -4,6 +4,10 @@ import { z } from 'zod';
 import { useAuthStore } from '../store/authStore';
 
 export default function LoginPage() {
+  console.log('🔴🔴🔴 LoginPage COMPONENT RENDERING 🔴🔴🔴');
+  console.log('DEBUG_LOGIN from localStorage:', localStorage.getItem('DEBUG_LOGIN'));
+  console.log('DEBUG_ERROR_MESSAGE from localStorage:', localStorage.getItem('DEBUG_ERROR_MESSAGE'));
+
   const navigate = useNavigate();
   const { login, isLoading, error, clearError } = useAuthStore();
 
@@ -46,7 +50,10 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('=== FORM SUBMIT STARTED ===');
+    console.log('Event:', e);
     e.preventDefault();
+    console.log('preventDefault called');
     console.log('handleSubmit called with:', formData);
     setFormErrors({});
     // Don't clear error here - let the login function handle it
@@ -75,7 +82,14 @@ export default function LoginPage() {
     } catch (err: any) {
       // Error is already set in the store, but log for debugging
       console.error('Login failed in component:', err.response?.data || err.message);
+      console.error('Full error object:', err);
       console.log('Error should be displayed now. Current error state:', error);
+
+      // Wait a tick to let Zustand update propagate, then log again
+      setTimeout(() => {
+        console.log('After timeout, error state:', useAuthStore.getState().error);
+      }, 0);
+
       // Don't clear the form - keep the email so user can try again
       // Only clear the password for security
       setFormData(prev => ({ ...prev, password: '' }));
@@ -108,7 +122,16 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(e) => {
+            console.log('=== FORM onSubmit FIRED ===');
+            e.preventDefault();
+            e.stopPropagation();
+            handleSubmit(e);
+            return false;
+          }}
+        >
           {/* Global Error */}
           {error && (
             <div className="rounded-md bg-red-50 border border-red-200 p-4">
@@ -204,13 +227,26 @@ export default function LoginPage() {
 
           <div>
             <button
-              type="submit"
+              type="button"
               disabled={isLoading}
+              onClick={async () => {
+                try {
+                  console.log('=== BUTTON CLICKED ===');
+                  console.log('Form data:', formData);
+                  console.log('About to call handleSubmit');
+                  await handleSubmit({ preventDefault: () => {}, stopPropagation: () => {} } as any);
+                  console.log('handleSubmit completed');
+                } catch (err) {
+                  console.error('!!! ERROR IN BUTTON CLICK !!!', err);
+                  alert('Error: ' + (err as any).message);
+                }
+              }}
               className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
                 isLoading
                   ? 'bg-primary-400 cursor-not-allowed'
                   : 'bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'
               }`}
+              style={{ pointerEvents: 'auto', cursor: 'pointer', zIndex: 9999 }}
             >
               {isLoading ? (
                 <span className="flex items-center">
