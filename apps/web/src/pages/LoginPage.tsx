@@ -13,6 +13,9 @@ export default function LoginPage() {
     password: z.string().min(1, 'Password is required'),
   });
 
+  // Debug: Log schema configuration
+  console.log('LoginPage - Schema defined with password min(1) - Version: 2024-11-07-12:00');
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -50,13 +53,16 @@ export default function LoginPage() {
 
     // Validate form
     const result = loginSchema.safeParse(formData);
+    console.log('Validation result:', result);
     if (!result.success) {
       const errors: Record<string, string> = {};
       result.error.errors.forEach((err) => {
+        console.log('Validation error:', err.path, err.message);
         if (err.path[0]) {
           errors[err.path[0].toString()] = err.message;
         }
       });
+      console.log('Setting form errors:', errors);
       setFormErrors(errors);
       return;
     }
@@ -86,6 +92,9 @@ export default function LoginPage() {
           </h2>
           <p className="mt-2 text-center text-sm font-bold text-red-600">
             PASSWORD VALIDATION: min 1 character only
+          </p>
+          <p className="mt-1 text-center text-xs text-purple-600 font-mono">
+            Version: 2024-11-07-12:00 | Check Console for Debug Info
           </p>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
