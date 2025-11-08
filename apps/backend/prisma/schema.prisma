@@ -21,9 +21,11 @@ model Company {
   updatedAt DateTime @updatedAt
 
   // Relations
-  users        User[]
-  auditEvents  AuditEvent[]
-  clients      Client[]
+  users          User[]
+  auditEvents    AuditEvent[]
+  clients        Client[]
+  projects       Project[]
+  inventoryItems InventoryItem[]
 
   @@map("companies")
 }
@@ -103,6 +105,7 @@ model Client {
   companyId String
   name      String
   type      ClientType
+  imageUrl  String?
 
   // International-friendly address fields
   street1    String
@@ -118,6 +121,7 @@ model Client {
   // Relations
   company  Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   contacts ClientContact[]
+  projects Project[]
 
   @@index([companyId])
   @@index([type])
@@ -138,6 +142,7 @@ model ClientContact {
   email     String?
   phone     String?
   role      String?
+  imageUrl  String?
   isPrimary Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -147,4 +152,151 @@ model ClientContact {
 
   @@index([clientId])
   @@map("client_contacts")
+}
+
+// ===================================
+// Project Management - Phase 2
+// ===================================
+
+model Project {
+  id          String        @id @default(cuid())
+  companyId   String
+  clientId    String
+  name        String
+  description String?       @db.Text
+  status      ProjectStatus @default(PLANNED)
+  imageUrl    String?
+
+  // Project location (may differ from client address)
+  street1    String
+  street2    String?
+  city       String
+  state      String
+  postalCode String
+  country    String  @default("United States")
+
+  // Timeline
+  startDate              DateTime?
+  estimatedCompletionDate DateTime?
+  actualCompletionDate   DateTime?
+
+  // Budget tracking
+  estimatedBudget Decimal? @db.Decimal(12, 2)
+  actualCost      Decimal? @db.Decimal(12, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  client         Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  inventoryItems InventoryItem[]
+
+  @@index([companyId])
+  @@index([clientId])
+  @@index([status])
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  PLANNED
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+// ===================================
+// Inventory Management - Phase 3
+// ===================================
+
+model InventoryItem {
+  id          String             @id @default(cuid())
+  companyId   String
+  projectId   String?            // Optional - some tools aren't project-specific
+
+  // Core fields (all types)
+  type        InventoryItemType
+  name        String
+  description String?            @db.Text
+  quantity    Decimal            @db.Decimal(10, 2)
+  unit        String             // "lbs", "units", "hours", "sq ft"
+  status      InventoryStatus
+
+  // Type-specific fields (optional - depends on type)
+
+  // Material-specific
+  supplier         String?
+  purchaseCost     Decimal?       @db.Decimal(12, 2)
+  purchaseDate     DateTime?
+  materialCategory String?        // "Lumber", "Concrete", "Disposal", etc.
+
+  // Tool-specific
+  ownership        String?        // "OWNED", "RENTED"
+  rentalRate       Decimal?       @db.Decimal(10, 2)
+  rentalPeriod     String?        // "daily", "weekly", "monthly"
+  maintenanceDate  DateTime?
+  serialNumber     String?
+
+  // Salvage-specific
+  condition        String?        // "Excellent", "Good", "Fair", "As-Is"
+  estimatedValue   Decimal?       @db.Decimal(12, 2)
+  reservePrice     Decimal?       @db.Decimal(12, 2)
+  dimensions       String?
+  storageLocation  String?
+
+  // Common metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  photos  InventoryPhoto[]
+
+  @@index([companyId])
+  @@index([projectId])
+  @@index([type])
+  @@index([status])
+  @@map("inventory_items")
+}
+
+enum InventoryItemType {
+  MATERIAL   // Things you buy and consume
+  TOOL       // Equipment you own or rent
+  SALVAGE    // Things you extract and sell
+}
+
+enum InventoryStatus {
+  // Material statuses
+  PURCHASED
+  IN_STOCK
+  CONSUMED
+
+  // Tool statuses
+  AVAILABLE
+  ASSIGNED
+  IN_USE
+  MAINTENANCE
+
+  // Salvage statuses
+  EXTRACTED
+  AVAILABLE_FOR_SALE
+  LISTED
+  SOLD
+  SHIPPED
+}
+
+model InventoryPhoto {
+  id              String   @id @default(cuid())
+  inventoryItemId String
+  photoUrl        String
+  isPrimary       Boolean  @default(false)
+  displayOrder    Int      @default(0)
+  uploadedAt      DateTime @default(now())
+
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+
+  @@index([inventoryItemId])
+  @@map("inventory_photos")
 }
