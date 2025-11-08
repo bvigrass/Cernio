@@ -63,6 +63,10 @@ coverage/
 !.vscode/extensions.json
 *.code-workspace
 
+# Claude Code
+.claude/settings.local.json
+.claude/**/*.local.json
+
 # JetBrains IDEs
 .idea/
 *.iml
@@ -140,6 +144,8 @@ temp/
 *.bak
 *.swp
 *.cache
+nul
+**/nul
 
 # ============================================
 # Database
