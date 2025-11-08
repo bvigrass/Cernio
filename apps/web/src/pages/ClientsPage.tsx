@@ -217,8 +217,23 @@ export default function ClientsPage() {
               {clients.map((client) => (
                 <tr key={client.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {client.name}
+                    <div className="flex items-center">
+                      {client.imageUrl ? (
+                        <img
+                          src={client.imageUrl}
+                          alt={client.name}
+                          className="h-10 w-10 rounded-lg object-cover mr-3"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center mr-3">
+                          <span className="text-gray-500 font-medium">
+                            {client.name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                      <div className="text-sm font-medium text-gray-900">
+                        {client.name}
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

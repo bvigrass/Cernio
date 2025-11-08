@@ -12,6 +12,7 @@ export interface ClientContact {
   email?: string;
   phone?: string;
   role?: string;
+  imageUrl?: string;
   isPrimary: boolean;
   createdAt: string;
   updatedAt: string;
@@ -22,6 +23,7 @@ export interface Client {
   companyId: string;
   name: string;
   type: ClientType;
+  imageUrl?: string;
   street1: string;
   street2?: string;
   city: string;
@@ -38,12 +40,14 @@ export interface CreateClientContactData {
   email?: string;
   phone?: string;
   role?: string;
+  imageUrl?: string;
   isPrimary?: boolean;
 }
 
 export interface CreateClientData {
   name: string;
   type: ClientType;
+  imageUrl?: string;
   street1: string;
   street2?: string;
   city: string;
@@ -56,6 +60,7 @@ export interface CreateClientData {
 export interface UpdateClientData {
   name?: string;
   type?: ClientType;
+  imageUrl?: string;
   street1?: string;
   street2?: string;
   city?: string;

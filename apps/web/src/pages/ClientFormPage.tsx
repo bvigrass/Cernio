@@ -7,6 +7,7 @@ import { ClientType, CreateClientContactData } from '../types/client';
 const clientSchema = z.object({
   name: z.string().min(1, 'Client name is required'),
   type: z.nativeEnum(ClientType),
+  imageUrl: z.string().optional(),
   street1: z.string().min(1, 'Street address is required'),
   street2: z.string().optional(),
   city: z.string().min(1, 'City is required'),
@@ -23,6 +24,7 @@ export default function ClientFormPage() {
   const [formData, setFormData] = useState({
     name: '',
     type: ClientType.RESIDENTIAL,
+    imageUrl: '',
     street1: '',
     street2: '',
     city: '',
@@ -32,7 +34,7 @@ export default function ClientFormPage() {
   });
 
   const [contacts, setContacts] = useState<CreateClientContactData[]>([
-    { name: '', email: '', phone: '', role: '', isPrimary: true },
+    { name: '', email: '', phone: '', role: '', imageUrl: '', isPrimary: true },
   ]);
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -52,6 +54,7 @@ export default function ClientFormPage() {
       setFormData({
         name: client.name,
         type: client.type,
+        imageUrl: client.imageUrl || '',
         street1: client.street1,
         street2: client.street2 || '',
         city: client.city,
@@ -66,6 +69,7 @@ export default function ClientFormPage() {
             email: c.email,
             phone: c.phone,
             role: c.role,
+            imageUrl: c.imageUrl,
             isPrimary: c.isPrimary,
           }))
         );
@@ -102,7 +106,7 @@ export default function ClientFormPage() {
   const addContact = () => {
     setContacts((prev) => [
       ...prev,
-      { name: '', email: '', phone: '', role: '', isPrimary: false },
+      { name: '', email: '', phone: '', role: '', imageUrl: '', isPrimary: false },
     ]);
   };
 
@@ -276,6 +280,25 @@ export default function ClientFormPage() {
               {formErrors.type && (
                 <p className="mt-1 text-sm text-red-600">{formErrors.type}</p>
               )}
+            </div>
+
+            {/* Image URL */}
+            <div className="md:col-span-2">
+              <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                Logo/Image URL (Optional)
+              </label>
+              <input
+                id="imageUrl"
+                name="imageUrl"
+                type="url"
+                value={formData.imageUrl}
+                onChange={handleChange}
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                placeholder="https://example.com/logo.png"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Enter a URL to an image (e.g., company logo or building photo)
+              </p>
             </div>
 
             {/* Street Address 1 */}
@@ -521,6 +544,22 @@ export default function ClientFormPage() {
                       }
                       className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                       placeholder="Project Manager"
+                    />
+                  </div>
+
+                  {/* Contact Image URL */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Profile Image URL (Optional)
+                    </label>
+                    <input
+                      type="url"
+                      value={contact.imageUrl}
+                      onChange={(e) =>
+                        handleContactChange(index, 'imageUrl', e.target.value)
+                      }
+                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      placeholder="https://example.com/photo.jpg"
                     />
                   </div>
 
