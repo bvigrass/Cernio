@@ -88,7 +88,7 @@ export class ClientsService {
         data: {
           ...clientData,
           contacts: {
-            create: contacts,
+            create: contacts as any,
           },
         },
         include: {

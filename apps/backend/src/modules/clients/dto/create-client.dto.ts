@@ -19,6 +19,10 @@ export class CreateClientContactDto {
   @IsOptional()
   role?: string;
 
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
+
   @IsOptional()
   isPrimary?: boolean;
 }
@@ -30,6 +34,10 @@ export class CreateClientDto {
 
   @IsEnum(ClientType)
   type: ClientType;
+
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
 
   @IsString()
   @IsNotEmpty()

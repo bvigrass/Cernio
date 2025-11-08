@@ -1,46 +1,24 @@
-import { PrismaClient, ClientType, UserRole } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import { PrismaClient, ClientType, ProjectStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Starting database seed...');
+  console.log('Starting database seed for existing user...');
 
-  // Find or create a demo company
-  let company = await prisma.company.findFirst({
-    where: { name: 'Demo Construction Co' },
+  // Get the first company that has users
+  const company = await prisma.company.findFirst({
+    include: { users: true },
   });
 
   if (!company) {
-    company = await prisma.company.create({
-      data: {
-        name: 'Demo Construction Co',
-      },
-    });
-    console.log('Created demo company');
+    console.error('No company found! Please create a user first.');
+    return;
   }
 
-  // Find or create a demo user for the company
-  let user = await prisma.user.findFirst({
-    where: { email: 'demo@example.com' },
-  });
+  console.log(`Found company: ${company.name} (ID: ${company.id})`);
+  console.log(`Company has ${company.users.length} users`);
 
-  if (!user) {
-    const hashedPassword = await bcrypt.hash('password123', 10);
-    user = await prisma.user.create({
-      data: {
-        email: 'demo@example.com',
-        password: hashedPassword,
-        firstName: 'Demo',
-        lastName: 'User',
-        role: UserRole.COMPANY_ADMIN,
-        companyId: company.id,
-      },
-    });
-    console.log('Created demo user');
-  }
-
-  // Seed clients
+  // Seed clients for this company
   const clients = [
     {
       name: 'Riverside Shopping Center LLC',
@@ -177,7 +155,7 @@ async function main() {
     });
 
     if (existingClient) {
-      console.log(`Client "${clientData.name}" already exists, skipping...`);
+      console.log(`Client "${clientData.name}" already exists for this company, skipping...`);
       continue;
     }
 
@@ -200,6 +178,123 @@ async function main() {
   }
 
   console.log('Database seed completed!');
+
+  // Seed projects for existing clients
+  console.log('\nSeeding projects...');
+  const existingClients = await prisma.client.findMany({
+    where: { companyId: company.id },
+    include: { projects: true },
+  });
+
+  if (existingClients.length === 0) {
+    console.log('No clients found. Please seed clients first.');
+    return;
+  }
+
+  const projectsData = [
+    {
+      clientName: 'Riverside Shopping Center LLC',
+      name: 'North Wing Demolition',
+      description: 'Complete demolition of north wing retail spaces including interior demolition, hazardous material abatement, and structural demolition.',
+      status: ProjectStatus.ACTIVE,
+      imageUrl: 'https://ui-avatars.com/api/?name=North+Wing&background=10B981&color=fff&size=200',
+      street1: '4250 Commerce Boulevard',
+      street2: 'North Wing',
+      city: 'Portland',
+      state: 'Oregon',
+      postalCode: '97220',
+      country: 'United States',
+      startDate: new Date('2025-01-15'),
+      estimatedCompletionDate: new Date('2025-04-30'),
+      estimatedBudget: 285000,
+      actualCost: 142500,
+    },
+    {
+      clientName: 'Metro Steel Manufacturing',
+      name: 'Warehouse C Teardown',
+      description: 'Industrial warehouse demolition including steel structure dismantling, concrete foundation removal, and site remediation.',
+      status: ProjectStatus.PLANNED,
+      imageUrl: 'https://ui-avatars.com/api/?name=Warehouse+C&background=8B5CF6&color=fff&size=200',
+      street1: '1875 Industrial Parkway',
+      street2: 'Warehouse C',
+      city: 'Cleveland',
+      state: 'Ohio',
+      postalCode: '44135',
+      country: 'United States',
+      startDate: new Date('2025-03-01'),
+      estimatedCompletionDate: new Date('2025-06-15'),
+      estimatedBudget: 520000,
+    },
+    {
+      clientName: 'Thompson Family Trust',
+      name: 'Residential Property Demolition',
+      description: 'Single-family home demolition and lot clearing for new construction. Includes asbestos abatement and utility disconnection.',
+      status: ProjectStatus.COMPLETED,
+      imageUrl: 'https://ui-avatars.com/api/?name=Thompson+Home&background=3B82F6&color=fff&size=200',
+      street1: '892 Oakwood Drive',
+      street2: '',
+      city: 'Austin',
+      state: 'Texas',
+      postalCode: '78704',
+      country: 'United States',
+      startDate: new Date('2024-11-01'),
+      estimatedCompletionDate: new Date('2024-11-15'),
+      actualCompletionDate: new Date('2024-11-14'),
+      estimatedBudget: 28000,
+      actualCost: 26750,
+    },
+    {
+      clientName: 'City of Springfield Public Works',
+      name: 'Old Municipal Building Demo',
+      description: 'Demolition of 1960s municipal office building. Selective demolition to preserve historic facade elements for reuse.',
+      status: ProjectStatus.ACTIVE,
+      imageUrl: 'https://ui-avatars.com/api/?name=Municipal+Building&background=F59E0B&color=fff&size=200',
+      street1: '324 City Hall Plaza',
+      street2: 'Building 4',
+      city: 'Springfield',
+      state: 'Illinois',
+      postalCode: '62701',
+      country: 'United States',
+      startDate: new Date('2025-01-08'),
+      estimatedCompletionDate: new Date('2025-05-30'),
+      estimatedBudget: 425000,
+      actualCost: 198000,
+    },
+  ];
+
+  for (const projectData of projectsData) {
+    const client = existingClients.find((c) => c.name === projectData.clientName);
+    if (!client) {
+      console.log(`Client "${projectData.clientName}" not found, skipping project "${projectData.name}"`);
+      continue;
+    }
+
+    const existingProject = await prisma.project.findFirst({
+      where: {
+        name: projectData.name,
+        clientId: client.id,
+      },
+    });
+
+    if (existingProject) {
+      console.log(`Project "${projectData.name}" already exists, skipping...`);
+      continue;
+    }
+
+    const { clientName, ...projectInfo } = projectData;
+
+    await prisma.project.create({
+      data: {
+        ...projectInfo,
+        clientId: client.id,
+        companyId: company.id,
+      },
+    });
+
+    console.log(`Created project: ${projectData.name} for client ${client.name}`);
+  }
+
+  console.log('\nAll seed data completed!');
 }
 
 main()
