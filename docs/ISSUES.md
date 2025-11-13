@@ -1,6 +1,6 @@
 # Open Issues & Decisions Needed
 
-**Last Updated:** 2025-11-03 (Phase 0 COMPLETED - 3 architectural decisions resolved)
+**Last Updated:** 2025-11-13 (Phase 1 Sprint 1-4 + Inventory COMPLETED - Core features implemented)
 **Status Key:** 🔴 Blocker | 🟡 Important | 🟢 Nice-to-have | ✅ Resolved
 
 ---
@@ -557,27 +557,10 @@
 
 ## Open Technical Questions
 
-### TQ-001: Multi-Tenancy Implementation Details 🔴
-**Status:** Open  
-**Decision Needed By:** Week 2  
-**Impact:** Data isolation, security
-
-**Questions:**
-1. Should we use Row-Level Security (RLS) in PostgreSQL?
-   - Pro: Extra security layer
-   - Con: Performance overhead, complexity
-
-2. How to handle company_id in all queries?
-   - Option A: ORM middleware (automatic)
-   - Option B: Explicit in every query (safer but verbose)
-
-**Recommendation:** Use ORM middleware to automatically inject company_id filter. Add RLS as extra security layer.
-
-**Action Items:**
-- [ ] Prototype RLS with Prisma
-- [ ] Measure performance impact
-- [ ] Write documentation for developers
-- [ ] Decision by: 2025-11-17
+### TQ-001: Multi-Tenancy Implementation Details ✅
+**Status:** RESOLVED
+**Decision Date:** 2025-11-13
+**Decision:** Explicit company_id filtering in service layer (moved to Decision Log)
 
 ---
 
@@ -662,6 +645,11 @@
 **Date:** 2025-11-03
 **Rationale:** Excellent TypeScript support and type safety. Simpler migration workflow perfect for rapid MVP development. Schema-first approach similar to Entity Framework from .NET. Generated Prisma Client provides full type safety across the application. Migration system is production-ready. User has .NET background and Prisma's approach is more familiar.
 
+### ✅ RESOLVED: TQ-001 - Multi-Tenancy Implementation
+**Decision:** Explicit company_id filtering in service layer
+**Date:** 2025-11-13
+**Rationale:** Implemented explicit filtering where every query includes a `where: { companyId }` clause. This approach is verbose but provides maximum visibility and safety. All modules (Auth, Clients, Projects, Inventory) enforce multi-tenancy at the service layer. Deferred RLS implementation as extra security layer can be added later if needed. Current implementation successfully isolates data between companies in production code.
+
 ---
 
 ## How to Use This Document
@@ -684,4 +672,4 @@
 ---
 
 **Document Owner:** Product & Engineering Leadership
-**Decisions Resolved:** 7 total (4 foundational + 3 architectural)
+**Decisions Resolved:** 8 total (4 foundational + 4 architectural/technical)

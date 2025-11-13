@@ -2,7 +2,7 @@
 
 **Project Start:** 2025-11-03
 **Target MVP Launch:** 2026-06-01 (7 months)
-**Current Phase:** Phase 0 - COMPLETED ✅ | Ready for Phase 1
+**Current Phase:** Phase 1 - Sprint 1-4 + Inventory COMPLETED ✅ | Working on Sprint 5 (Document Upload) & Sprint 2 (User Management)
 
 ---
 
@@ -86,47 +86,50 @@
 
 ## Phase 1: Authentication & First Vertical Slice (Months 1-3)
 
-### Sprint 1: Authentication System (Weeks 1-2)
+### Sprint 1: Authentication System (Weeks 1-2) ✅ MOSTLY COMPLETE
 
 #### Backend - Auth Module
-- [ ] Create `auth` module in NestJS
-- [ ] Implement POST `/api/v1/auth/register` endpoint
-  - [ ] Email validation (unique check)
-  - [ ] Password hashing with bcrypt
-  - [ ] Create company record (first user = admin)
-  - [ ] Send verification email
-- [ ] Implement POST `/api/v1/auth/login` endpoint
-  - [ ] Validate credentials
-  - [ ] Generate JWT access token (15 min expiry)
-  - [ ] Generate refresh token (30 days, store in DB)
-  - [ ] Return tokens + user profile
-- [ ] Implement POST `/api/v1/auth/refresh` endpoint
-- [ ] Implement POST `/api/v1/auth/logout` endpoint
+- [x] Create `auth` module in NestJS
+- [x] Implement POST `/api/v1/auth/register` endpoint
+  - [x] Email validation (unique check via GET `/api/v1/auth/check-email`)
+  - [x] Password hashing with bcrypt
+  - [x] Create company record (first user = admin)
+  - [ ] Send verification email (requires email service)
+- [x] Implement POST `/api/v1/auth/login` endpoint
+  - [x] Validate credentials
+  - [x] Generate JWT access token (15 min expiry)
+  - [x] Generate refresh token (30 days, store in DB)
+  - [x] Return tokens + user profile
+- [x] Implement POST `/api/v1/auth/refresh` endpoint
+- [x] Implement POST `/api/v1/auth/logout` endpoint
 - [ ] Implement POST `/api/v1/auth/forgot-password` endpoint
 - [ ] Implement POST `/api/v1/auth/reset-password` endpoint
-- [ ] Create `AuthGuard` for protected routes
-- [ ] Create `RolesGuard` for RBAC
-- [ ] Write unit tests for auth service (>80% coverage)
+- [x] Create `AuthGuard` for protected routes (JwtAuthGuard)
+- [x] Create `RolesGuard` for RBAC
+- [x] Implement GET `/api/v1/auth/me` endpoint (current user profile)
+- [x] Write unit tests for auth service (>80% coverage)
+- [x] Write integration tests for auth endpoints
 
 #### Frontend - Auth Pages
-- [ ] Create `/register` page
-  - [ ] Form: company name, user name, email, password
-  - [ ] Client-side validation (Zod schema)
-  - [ ] Display error messages
-  - [ ] Redirect to email verification notice
-- [ ] Create `/login` page
-  - [ ] Form: email, password
-  - [ ] "Forgot password?" link
-  - [ ] Store JWT in memory + refresh token in httpOnly cookie
-  - [ ] Redirect to dashboard on success
+- [x] Create `/register` page
+  - [x] Form: company name, user name, email, password
+  - [x] Client-side validation (Zod schema)
+  - [x] Display error messages
+  - [x] Password strength checker component
+  - [ ] Redirect to email verification notice (skipped - no email yet)
+- [x] Create `/login` page
+  - [x] Form: email, password
+  - [ ] "Forgot password?" link (UI not added yet)
+  - [x] Store JWT in memory + refresh token handling
+  - [x] Redirect to dashboard on success
 - [ ] Create `/forgot-password` page
 - [ ] Create `/reset-password/:token` page
-- [ ] Create `AuthContext` with React Context API
-  - [ ] Current user state
-  - [ ] Login/logout functions
-  - [ ] Token refresh logic
-- [ ] Create `PrivateRoute` component (redirect to login if not authenticated)
-- [ ] Implement automatic token refresh (when access token expires)
+- [x] Create auth state management with Zustand
+  - [x] Current user state
+  - [x] Login/logout functions
+  - [x] Token refresh logic (automatic via axios interceptors)
+- [x] Create `PrivateRoute` component (redirect to login if not authenticated)
+- [x] Implement automatic token refresh (when access token expires)
 
 #### Email Service
 - [ ] Integrate SendGrid
@@ -136,7 +139,7 @@
   - [ ] Password reset
 - [ ] Implement email queue (Bull with Redis)
 
-**Sprint 1 Deliverable:** Users can register, verify email, login, logout
+**Sprint 1 Deliverable:** ✅ Users can register, login, logout (email verification deferred)
 
 ---
 
@@ -168,80 +171,117 @@
 
 ---
 
-### Sprint 3: Client Management (Weeks 5-6)
+### Sprint 3: Client Management (Weeks 5-6) ✅ COMPLETE
 
 #### Backend - Clients Module
-- [ ] Create database tables: `clients`, `client_contacts`
-- [ ] Create POST `/api/v1/clients` endpoint
-- [ ] Create GET `/api/v1/clients` endpoint (with pagination, search)
-- [ ] Create GET `/api/v1/clients/:id` endpoint
-- [ ] Create PUT `/api/v1/clients/:id` endpoint
-- [ ] Create DELETE `/api/v1/clients/:id` endpoint (soft delete)
-- [ ] Create POST `/api/v1/clients/:id/contacts` (add contact)
-- [ ] Create PUT `/api/v1/clients/:id/contacts/:contactId` (edit contact)
-- [ ] Enforce multi-tenancy (all queries filter by `company_id`)
-- [ ] Write integration tests
+- [x] Create database tables: `clients`, `client_contacts`
+- [x] Create POST `/api/v1/clients` endpoint
+- [x] Create GET `/api/v1/clients` endpoint (full list, no pagination yet)
+- [x] Create GET `/api/v1/clients/:id` endpoint
+- [x] Create PUT `/api/v1/clients/:id` endpoint
+- [x] Create DELETE `/api/v1/clients/:id` endpoint (soft delete)
+- [x] Contacts included in client CRUD (nested within client operations)
+- [x] Enforce multi-tenancy (all queries filter by `company_id`)
+- [x] Write unit tests (comprehensive coverage)
 
 #### Frontend - Client Management UI
-- [ ] Create `/clients` page
-  - [ ] Client list with search/filter
-  - [ ] Table columns: Name, Type, Primary Contact, Phone, Actions
-  - [ ] Pagination controls
-- [ ] Create "Add Client" button → modal
-  - [ ] Form: Name, Type, Billing Address, Primary Contact
-  - [ ] Validation with Zod
-- [ ] Create `/clients/:id` detail page
-  - [ ] Display client info
-  - [ ] List contacts (add, edit, delete)
-  - [ ] Interaction history timeline (empty for now)
-- [ ] Create edit client modal
+- [x] Create `/clients` page
+  - [x] Client list in table format
+  - [x] Table columns: Name, Type, Primary Contact, Email, Phone, Actions
+  - [x] Delete action with confirmation
+  - [x] Empty state when no clients
+  - [ ] Search/filter (not implemented yet)
+  - [ ] Pagination controls (not needed yet - full list)
+- [x] Create `/clients/new` page
+  - [x] Form: Name, Type, Address (street1, street2, city, state, postal, country)
+  - [x] Multiple contacts with primary designation
+  - [x] Validation with Zod
+  - [x] Image URL support for client and contacts
+- [x] Create `/clients/:id` detail page
+  - [x] Display client info (name, type, address)
+  - [x] List all contacts with details
+  - [x] Edit and Delete buttons
+  - [x] Loading and error states
+- [x] Create `/clients/:id/edit` page (full edit form)
+- [x] International-friendly address fields
 
-**Sprint 3 Deliverable:** Users can manage client database
+**Sprint 3 Deliverable:** ✅ Users can manage client database with full CRUD
 
 ---
 
-### Sprint 4: Project Creation & Dashboard (Weeks 7-9)
+### Sprint 4: Project Creation & Dashboard (Weeks 7-9) ✅ COMPLETE
 
 #### Backend - Projects Module
-- [ ] Create `projects` table with all fields
-- [ ] Create POST `/api/v1/projects` endpoint
-  - [ ] Validate required fields
-  - [ ] Link to client_id
-  - [ ] Set status = "Planning"
-  - [ ] Assign PM (user_id)
-- [ ] Create GET `/api/v1/projects` endpoint
-  - [ ] Filter by status, PM, date range
-  - [ ] Pagination and sorting
-- [ ] Create GET `/api/v1/projects/:id` endpoint
-- [ ] Create PUT `/api/v1/projects/:id` endpoint
-- [ ] Create PUT `/api/v1/projects/:id/status` endpoint
-  - [ ] Validate status transitions
-  - [ ] Log to audit_events
-- [ ] Create GET `/api/v1/dashboard/summary` endpoint
-  - [ ] Active projects count
-  - [ ] Projects by status
-  - [ ] Upcoming milestones
-- [ ] Write tests
+- [x] Create `projects` table with all fields
+- [x] Create POST `/api/v1/projects` endpoint
+  - [x] Validate required fields
+  - [x] Link to client_id
+  - [x] Default status = "PLANNED"
+  - [ ] Assign PM field exists but not implemented in UI yet
+- [x] Create GET `/api/v1/projects` endpoint
+  - [x] Returns all projects with client info
+  - [ ] Filter by status, date range (not implemented yet)
+  - [ ] Pagination and sorting (not needed yet)
+- [x] Create GET `/api/v1/projects/:id` endpoint
+- [x] Create PATCH `/api/v1/projects/:id` endpoint
+- [ ] Create PUT `/api/v1/projects/:id/status` endpoint (status changes via PATCH)
+  - [ ] Validate status transitions (basic validation exists)
+  - [ ] Log to audit_events (not implemented yet)
+- [ ] Create GET `/api/v1/dashboard/summary` endpoint (basic dashboard exists)
+- [x] Write unit tests (comprehensive coverage)
+- [x] Enforce multi-tenancy (all queries filter by `company_id`)
 
 #### Frontend - Project Dashboard
-- [ ] Create `/dashboard` page (home after login)
-  - [ ] Summary cards: Active Projects, Estimates Pending, Revenue MTD
-  - [ ] Recent projects list
-  - [ ] Quick actions: New Project, New Estimate
-- [ ] Create `/projects` page
-  - [ ] Project list with filters
-  - [ ] Status badges (color-coded)
-  - [ ] Table: Name, Client, Status, Budget, Start Date, PM, Actions
-- [ ] Create "New Project" modal
-  - [ ] Form: Name, Client (dropdown), Site Address, Start/End Date, Budget, Assigned PM
-  - [ ] Save and redirect to project detail
-- [ ] Create `/projects/:id` detail page
-  - [ ] Project header (name, client, status)
-  - [ ] Tabs: Overview, Budget, Documents, Team, Activity
-  - [ ] Overview tab: Basic info, status change dropdown
-- [ ] Implement status change with confirmation modal
+- [x] Create `/dashboard` page (home after login)
+  - [x] Quick action cards: Manage Clients, Manage Projects
+  - [ ] Summary cards: Active Projects, Estimates Pending, Revenue MTD (simplified version)
+  - [ ] Recent projects list (not implemented yet)
+- [x] Create `/projects` page
+  - [x] Project list in table format
+  - [x] Status badges (color-coded: PLANNED, ACTIVE, ON_HOLD, COMPLETED, CANCELLED)
+  - [x] Table: Name, Client, Status, Budget, Start Date, Actions
+  - [x] Delete action with confirmation
+  - [x] Empty state when no projects
+  - [ ] Filters (not implemented yet)
+- [x] Create `/projects/new` page
+  - [x] Form: Name, Client (dropdown), Description, Status
+  - [x] Location fields (street1, street2, city, state, postal, country)
+  - [x] Timeline: Start Date, Estimated Completion, Actual Completion
+  - [x] Budget: Estimated Budget, Actual Cost
+  - [x] Image URL support
+  - [x] Validation with Zod
+- [x] Create `/projects/:id` detail page
+  - [x] Project header (name, status)
+  - [x] Display all project info (location, timeline, budget, client)
+  - [x] Edit and Delete buttons
+  - [x] Loading and error states
+  - [ ] Tabs: Overview, Budget, Documents, Team, Activity (simplified - single view)
+- [x] Create `/projects/:id/edit` page (full edit form)
 
-**Sprint 4 Deliverable:** Complete vertical slice - User can register → create company → add client → create project
+**Sprint 4 Deliverable:** ✅ Complete vertical slice - User can register → create company → add client → create project
+
+---
+
+### Inventory Management Module (Added) ✅ COMPLETE
+
+#### Backend - Inventory Module
+- [x] Create database tables: `inventory_items`, `inventory_photos`
+- [x] Support three inventory types: MATERIAL, TOOL, SALVAGE
+- [x] Create POST `/api/v1/inventory` endpoint
+  - [x] Type-specific fields (material, tool, salvage attributes)
+  - [x] Optional project association
+- [x] Create GET `/api/v1/inventory` endpoint
+  - [x] Filter by type, status, projectId
+  - [x] Returns all items for company
+- [x] Create GET `/api/v1/inventory/:id` endpoint
+- [x] Create PATCH `/api/v1/inventory/:id` endpoint
+- [x] Create DELETE `/api/v1/inventory/:id` endpoint
+- [x] Photo support with display ordering
+- [x] Status enums for each type
+- [x] Enforce multi-tenancy (all queries filter by `company_id`)
+- [x] Write unit tests (comprehensive coverage)
+
+**Inventory Module Deliverable:** ✅ Full CRUD for materials, tools, and salvage items
 
 ---
 
@@ -552,5 +592,5 @@ Brief description of changes
 
 ---
 
-**Last Updated:** 2025-11-03 (Phase 0 COMPLETED ✅)
+**Last Updated:** 2025-11-13 (Phase 1 - Sprint 1-4 + Inventory COMPLETED ✅)
 **Document Owner:** Development Team
