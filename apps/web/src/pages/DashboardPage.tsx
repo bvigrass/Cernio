@@ -139,6 +139,27 @@ export default function DashboardPage() {
             <span className="text-xs text-gray-500 mt-1">View & manage projects</span>
           </Link>
 
+          <Link
+            to="/inventory"
+            className="flex flex-col items-center justify-center px-4 py-6 border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-primary-300 transition-colors shadow-sm text-center"
+          >
+            <svg
+              className="h-8 w-8 text-primary-600 mb-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              />
+            </svg>
+            <span className="text-sm font-medium text-gray-900">Inventory</span>
+            <span className="text-xs text-gray-500 mt-1">Manage materials, tools & salvage</span>
+          </Link>
+
           <div className="flex flex-col items-center justify-center px-4 py-6 border-2 border-gray-200 rounded-lg shadow-sm text-center bg-gray-50 cursor-not-allowed opacity-60">
             <svg
               className="h-8 w-8 text-gray-400 mb-3"
@@ -219,12 +240,12 @@ export default function DashboardPage() {
             </svg>
             New Project
           </Link>
-          <button
-            disabled
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-400 bg-gray-50 cursor-not-allowed"
+          <Link
+            to="/inventory/new"
+            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
           >
             <svg
-              className="mr-2 h-5 w-5 text-gray-300"
+              className="mr-2 h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -236,8 +257,8 @@ export default function DashboardPage() {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            New Estimate
-          </button>
+            New Inventory Item
+          </Link>
           <button
             disabled
             className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-400 bg-gray-50 cursor-not-allowed"

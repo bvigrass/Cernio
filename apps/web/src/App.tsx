@@ -12,6 +12,13 @@ import ClientFormPage from './pages/ClientFormPage';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import ProjectFormPage from './pages/ProjectFormPage';
+import InventoryPage from './pages/InventoryPage';
+import InventoryDetailPage from './pages/InventoryDetailPage';
+import InventoryFormPage from './pages/InventoryFormPage';
+import MarketplacePage from './pages/MarketplacePage';
+import MarketplaceItemPage from './pages/MarketplaceItemPage';
+import MarketplaceLoginPage from './pages/MarketplaceLoginPage';
+import MarketplaceRegisterPage from './pages/MarketplaceRegisterPage';
 import { useAuthStore } from './store/authStore';
 
 function App() {
@@ -65,6 +72,10 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="marketplace" element={<MarketplacePage />} />
+        <Route path="marketplace/:id" element={<MarketplaceItemPage />} />
+        <Route path="marketplace/login" element={<MarketplaceLoginPage />} />
+        <Route path="marketplace/register" element={<MarketplaceRegisterPage />} />
       </Route>
 
       {/* Protected routes */}
@@ -85,6 +96,10 @@ function App() {
         <Route path="projects/new" element={<ProjectFormPage />} />
         <Route path="projects/:id" element={<ProjectDetailPage />} />
         <Route path="projects/:id/edit" element={<ProjectFormPage />} />
+        <Route path="inventory" element={<InventoryPage />} />
+        <Route path="inventory/new" element={<InventoryFormPage />} />
+        <Route path="inventory/:id" element={<InventoryDetailPage />} />
+        <Route path="inventory/:id/edit" element={<InventoryFormPage />} />
         {/* More protected routes will be added here */}
       </Route>
 

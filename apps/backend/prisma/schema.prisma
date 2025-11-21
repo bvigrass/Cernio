@@ -97,6 +97,82 @@ model AuditEvent {
 }
 
 // ===================================
+// Marketplace Customer Auth - Separate from Contractor Users
+// ===================================
+
+model MarketplaceUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String // Hashed with bcrypt
+  firstName String
+  lastName  String
+  phone     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  sessions MarketplaceSession[]
+  orders   Order[]
+
+  @@index([email])
+  @@map("marketplace_users")
+}
+
+model MarketplaceSession {
+  id               String          @id @default(cuid())
+  marketplaceUserId String
+  refreshToken     String          @unique
+  expiresAt        DateTime
+  createdAt        DateTime        @default(now())
+
+  // Relations
+  marketplaceUser MarketplaceUser @relation(fields: [marketplaceUserId], references: [id], onDelete: Cascade)
+
+  @@index([marketplaceUserId])
+  @@index([refreshToken])
+  @@map("marketplace_sessions")
+}
+
+model Order {
+  id                String          @id @default(cuid())
+  marketplaceUserId String
+  inventoryItemId   String
+  quantity          Decimal         @db.Decimal(10, 2)
+  totalPrice        Decimal         @db.Decimal(12, 2)
+  status            OrderStatus     @default(PENDING)
+
+  // Customer details
+  customerName      String
+  customerEmail     String
+  customerPhone     String?
+
+  // Shipping/pickup
+  shippingAddress   String?
+  notes             String?         @db.Text
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  marketplaceUser   MarketplaceUser @relation(fields: [marketplaceUserId], references: [id], onDelete: Cascade)
+
+  @@index([marketplaceUserId])
+  @@index([inventoryItemId])
+  @@index([status])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+// ===================================
 // Client Management - Phase 1
 // ===================================
 
@@ -280,6 +356,7 @@ enum InventoryStatus {
   MAINTENANCE
 
   // Salvage statuses
+  ESTIMATED // Pre-extraction estimate - quantity may vary
   EXTRACTED
   AVAILABLE_FOR_SALE
   LISTED
