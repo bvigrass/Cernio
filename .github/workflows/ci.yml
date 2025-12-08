@@ -10,9 +10,34 @@ jobs:
   lint-and-test:
     runs-on: ubuntu-latest
 
+    # Add PostgreSQL service for integration tests
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cernio_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     strategy:
       matrix:
         node-version: [20.x]
+
+    # Set environment variables for the job
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/cernio_test
+      JWT_SECRET: test-jwt-secret-for-ci
+      JWT_REFRESH_SECRET: test-jwt-refresh-secret-for-ci
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 30d
+      NODE_ENV: test
 
     steps:
       - name: Checkout code
@@ -29,6 +54,9 @@ jobs:
 
       - name: Generate Prisma Client
         run: npm run prisma:generate --workspace=apps/backend
+
+      - name: Run database migrations
+        run: npm run prisma:migrate:deploy --workspace=apps/backend
 
       - name: Lint code
         run: npm run lint

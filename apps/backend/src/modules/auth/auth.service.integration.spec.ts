@@ -23,13 +23,16 @@ describe('AuthService Integration Tests', () => {
 
   // Setup test environment before all tests
   beforeAll(async () => {
-    // Load test environment variables
+    // Load test environment variables (or use defaults if not set)
     process.env.DATABASE_URL =
+      process.env.DATABASE_URL ||
       'postgresql://postgres:ThisIsMyKey22!@localhost:5432/cernio_test';
-    process.env.JWT_SECRET = 'test-secret-key';
-    process.env.JWT_REFRESH_SECRET = 'test-refresh-secret';
-    process.env.JWT_EXPIRES_IN = '15m';
-    process.env.JWT_REFRESH_EXPIRES_IN = '30d';
+    process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret-key';
+    process.env.JWT_REFRESH_SECRET =
+      process.env.JWT_REFRESH_SECRET || 'test-refresh-secret';
+    process.env.JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
+    process.env.JWT_REFRESH_EXPIRES_IN =
+      process.env.JWT_REFRESH_EXPIRES_IN || '30d';
 
     moduleRef = await Test.createTestingModule({
       imports: [
