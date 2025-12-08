@@ -100,7 +100,7 @@ export class ProjectsService {
     updateProjectDto: UpdateProjectDto,
   ) {
     // Verify project belongs to company
-    const project = await this.findOne(id, companyId);
+    const _project = await this.findOne(id, companyId);
 
     // If updating client, verify new client belongs to company
     if (updateProjectDto.clientId) {
