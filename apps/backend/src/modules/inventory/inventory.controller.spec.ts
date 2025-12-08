@@ -5,7 +5,6 @@ import { InventoryItemType, InventoryStatus } from '@prisma/client';
 
 describe('InventoryController', () => {
   let controller: InventoryController;
-  let service: InventoryService;
 
   const mockInventoryService = {
     create: jest.fn(),
@@ -35,7 +34,6 @@ describe('InventoryController', () => {
     }).compile();
 
     controller = module.get<InventoryController>(InventoryController);
-    service = module.get<InventoryService>(InventoryService);
 
     jest.clearAllMocks();
   });
@@ -239,7 +237,11 @@ describe('InventoryController', () => {
 
       mockInventoryService.update.mockResolvedValue(mockUpdatedItem);
 
-      const result = await controller.update('item-123', mockRequest, updateDto);
+      const result = await controller.update(
+        'item-123',
+        mockRequest,
+        updateDto,
+      );
 
       expect(result).toEqual(mockUpdatedItem);
       expect(mockInventoryService.update).toHaveBeenCalledWith(

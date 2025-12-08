@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UserRole } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 // Mock bcrypt at module level
 jest.mock('bcrypt', () => ({
@@ -160,7 +161,6 @@ describe('AuthService', () => {
     };
 
     it('should successfully login with valid credentials', async () => {
-      const bcrypt = require('bcrypt');
       mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
@@ -206,7 +206,6 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException if password is invalid', async () => {
-      const bcrypt = require('bcrypt');
       mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 

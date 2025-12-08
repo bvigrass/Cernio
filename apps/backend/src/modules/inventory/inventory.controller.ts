@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+  Query,
+} from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { CreateInventoryItemDto } from './dto/create-inventory-item.dto';
 import { UpdateInventoryItemDto } from './dto/update-inventory-item.dto';
@@ -10,8 +21,14 @@ export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 
   @Post()
-  create(@Request() req: any, @Body() createInventoryItemDto: CreateInventoryItemDto) {
-    return this.inventoryService.create(req.user.companyId, createInventoryItemDto);
+  create(
+    @Request() req: any,
+    @Body() createInventoryItemDto: CreateInventoryItemDto,
+  ) {
+    return this.inventoryService.create(
+      req.user.companyId,
+      createInventoryItemDto,
+    );
   }
 
   @Get()
@@ -21,7 +38,11 @@ export class InventoryController {
     @Query('status') status?: string,
     @Query('projectId') projectId?: string,
   ) {
-    return this.inventoryService.findAll(req.user.companyId, { type, status, projectId });
+    return this.inventoryService.findAll(req.user.companyId, {
+      type,
+      status,
+      projectId,
+    });
   }
 
   @Get(':id')
@@ -30,8 +51,16 @@ export class InventoryController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Request() req: any, @Body() updateInventoryItemDto: UpdateInventoryItemDto) {
-    return this.inventoryService.update(id, req.user.companyId, updateInventoryItemDto);
+  update(
+    @Param('id') id: string,
+    @Request() req: any,
+    @Body() updateInventoryItemDto: UpdateInventoryItemDto,
+  ) {
+    return this.inventoryService.update(
+      id,
+      req.user.companyId,
+      updateInventoryItemDto,
+    );
   }
 
   @Delete(':id')

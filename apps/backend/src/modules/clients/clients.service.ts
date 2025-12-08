@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -70,7 +74,11 @@ export class ClientsService {
   /**
    * Update a client and optionally its contacts
    */
-  async update(id: string, companyId: string, updateClientDto: UpdateClientDto) {
+  async update(
+    id: string,
+    companyId: string,
+    updateClientDto: UpdateClientDto,
+  ) {
     // First verify the client exists and belongs to the company
     await this.findOne(id, companyId);
 

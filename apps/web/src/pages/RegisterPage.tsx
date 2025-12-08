@@ -131,7 +131,8 @@ export default function RegisterPage() {
 
     try {
       // Remove confirmPassword before sending to API
-      const { confirmPassword, ...registerData } = formData;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { confirmPassword: _confirmPassword, ...registerData } = formData;
       await register(registerData);
       navigate('/dashboard');
     } catch (err) {

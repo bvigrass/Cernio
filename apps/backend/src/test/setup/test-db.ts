@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { execSync } from 'child_process';
 
 let prisma: PrismaClient;
 
@@ -69,7 +68,9 @@ export async function teardownTestDatabase() {
  */
 export function getTestPrisma(): PrismaClient {
   if (!prisma) {
-    throw new Error('Test database not initialized. Call setupTestDatabase first.');
+    throw new Error(
+      'Test database not initialized. Call setupTestDatabase first.',
+    );
   }
   return prisma;
 }

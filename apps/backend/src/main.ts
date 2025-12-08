@@ -26,8 +26,12 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
-  console.log(`🚀 Cernio API Server running on http://localhost:${port}/api/v1`);
-  console.log(`📊 Health check available at http://localhost:${port}/api/v1/health`);
+  console.log(
+    `🚀 Cernio API Server running on http://localhost:${port}/api/v1`,
+  );
+  console.log(
+    `📊 Health check available at http://localhost:${port}/api/v1/health`,
+  );
 }
 
 bootstrap();

@@ -7,7 +7,6 @@ import { Decimal } from '@prisma/client/runtime/library';
 
 describe('InventoryService', () => {
   let service: InventoryService;
-  let prisma: PrismaService;
 
   const mockPrismaService = {
     inventoryItem: {
@@ -34,7 +33,6 @@ describe('InventoryService', () => {
     }).compile();
 
     service = module.get<InventoryService>(InventoryService);
-    prisma = module.get<PrismaService>(PrismaService);
 
     jest.clearAllMocks();
   });
@@ -351,7 +349,9 @@ describe('InventoryService', () => {
         quantity: new Decimal(200),
       };
 
-      mockPrismaService.inventoryItem.findUnique.mockResolvedValue(existingItem);
+      mockPrismaService.inventoryItem.findUnique.mockResolvedValue(
+        existingItem,
+      );
       mockPrismaService.inventoryItem.update.mockResolvedValue(updatedItem);
 
       const result = await service.update(itemId, companyId, updateDto);
@@ -386,7 +386,9 @@ describe('InventoryService', () => {
         companyId,
       };
 
-      mockPrismaService.inventoryItem.findUnique.mockResolvedValue(existingItem);
+      mockPrismaService.inventoryItem.findUnique.mockResolvedValue(
+        existingItem,
+      );
       mockPrismaService.project.findUnique.mockResolvedValue({
         id: 'project-123',
         companyId: 'different-company',
@@ -410,12 +412,16 @@ describe('InventoryService', () => {
         name: 'Copper Wire',
       };
 
-      mockPrismaService.inventoryItem.findUnique.mockResolvedValue(existingItem);
+      mockPrismaService.inventoryItem.findUnique.mockResolvedValue(
+        existingItem,
+      );
       mockPrismaService.inventoryItem.delete.mockResolvedValue(existingItem);
 
       const result = await service.remove(itemId, companyId);
 
-      expect(result).toEqual({ message: 'Inventory item deleted successfully' });
+      expect(result).toEqual({
+        message: 'Inventory item deleted successfully',
+      });
       expect(mockPrismaService.inventoryItem.delete).toHaveBeenCalledWith({
         where: { id: itemId },
       });
@@ -435,7 +441,9 @@ describe('InventoryService', () => {
         companyId: 'different-company',
       };
 
-      mockPrismaService.inventoryItem.findUnique.mockResolvedValue(existingItem);
+      mockPrismaService.inventoryItem.findUnique.mockResolvedValue(
+        existingItem,
+      );
 
       await expect(service.remove(itemId, companyId)).rejects.toThrow(
         ForbiddenException,

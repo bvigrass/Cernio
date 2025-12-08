@@ -1,4 +1,11 @@
-import { IsString, IsEnum, IsOptional, IsNumber, IsDateString, Min } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsNumber,
+  IsDateString,
+  Min,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { InventoryItemType, InventoryStatus } from '@prisma/client';
 

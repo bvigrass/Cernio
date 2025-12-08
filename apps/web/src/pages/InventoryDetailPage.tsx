@@ -14,6 +14,7 @@ export default function InventoryDetailPage() {
       fetchItem(id);
     }
     return () => clearCurrentItem();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleDelete = async () => {

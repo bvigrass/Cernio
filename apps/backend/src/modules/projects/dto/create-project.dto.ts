@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsDateString, IsDecimal } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsOptional,
+  IsDateString,
+} from 'class-validator';
 import { ProjectStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
 

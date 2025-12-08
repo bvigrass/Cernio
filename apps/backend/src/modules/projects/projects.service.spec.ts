@@ -7,7 +7,6 @@ import { Decimal } from '@prisma/client/runtime/library';
 
 describe('ProjectsService', () => {
   let service: ProjectsService;
-  let prisma: PrismaService;
 
   const mockPrismaService = {
     project: {
@@ -34,7 +33,6 @@ describe('ProjectsService', () => {
     }).compile();
 
     service = module.get<ProjectsService>(ProjectsService);
-    prisma = module.get<PrismaService>(PrismaService);
 
     jest.clearAllMocks();
   });

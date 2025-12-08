@@ -6,7 +6,6 @@ import { ClientType } from '@prisma/client';
 
 describe('ClientsService', () => {
   let service: ClientsService;
-  let prisma: PrismaService;
 
   const mockPrismaService = {
     client: {
@@ -33,7 +32,6 @@ describe('ClientsService', () => {
     }).compile();
 
     service = module.get<ClientsService>(ClientsService);
-    prisma = module.get<PrismaService>(PrismaService);
 
     jest.clearAllMocks();
   });
@@ -319,7 +317,9 @@ describe('ClientsService', () => {
       };
 
       mockPrismaService.client.findUnique.mockResolvedValue(existingClient);
-      mockPrismaService.clientContact.deleteMany.mockResolvedValue({ count: 1 });
+      mockPrismaService.clientContact.deleteMany.mockResolvedValue({
+        count: 1,
+      });
       mockPrismaService.client.update.mockResolvedValue(updatedClient);
 
       const result = await service.update(clientId, companyId, updateDto);

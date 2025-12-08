@@ -5,7 +5,6 @@ import { ClientType } from '@prisma/client';
 
 describe('ClientsController', () => {
   let controller: ClientsController;
-  let service: ClientsService;
 
   const mockClientsService = {
     create: jest.fn(),
@@ -35,7 +34,6 @@ describe('ClientsController', () => {
     }).compile();
 
     controller = module.get<ClientsController>(ClientsController);
-    service = module.get<ClientsService>(ClientsService);
 
     jest.clearAllMocks();
   });

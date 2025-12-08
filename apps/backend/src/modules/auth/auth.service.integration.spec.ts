@@ -305,9 +305,9 @@ describe('AuthService Integration Tests', () => {
     });
 
     it('should throw UnauthorizedException if refresh token not found in database', async () => {
-      await expect(
-        service.refreshTokens('non-existent-token'),
-      ).rejects.toThrow(UnauthorizedException);
+      await expect(service.refreshTokens('non-existent-token')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should throw UnauthorizedException if refresh token is expired', async () => {

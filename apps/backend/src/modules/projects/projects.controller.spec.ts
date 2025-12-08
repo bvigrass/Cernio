@@ -5,7 +5,6 @@ import { ProjectStatus } from '@prisma/client';
 
 describe('ProjectsController', () => {
   let controller: ProjectsController;
-  let service: ProjectsService;
 
   const mockProjectsService = {
     create: jest.fn(),
@@ -35,7 +34,6 @@ describe('ProjectsController', () => {
     }).compile();
 
     controller = module.get<ProjectsController>(ProjectsController);
-    service = module.get<ProjectsService>(ProjectsService);
 
     jest.clearAllMocks();
   });

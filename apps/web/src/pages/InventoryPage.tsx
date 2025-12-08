@@ -12,6 +12,7 @@ export default function InventoryPage() {
 
   useEffect(() => {
     loadItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const loadItems = async () => {

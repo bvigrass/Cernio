@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateInventoryItemDto } from './dto/create-inventory-item.dto';
 import { UpdateInventoryItemDto } from './dto/update-inventory-item.dto';
@@ -8,7 +12,10 @@ import { Decimal } from '@prisma/client/runtime/library';
 export class InventoryService {
   constructor(private prisma: PrismaService) {}
 
-  async create(companyId: string, createInventoryItemDto: CreateInventoryItemDto) {
+  async create(
+    companyId: string,
+    createInventoryItemDto: CreateInventoryItemDto,
+  ) {
     // If projectId is provided, verify it belongs to company
     if (createInventoryItemDto.projectId) {
       const project = await this.prisma.project.findUnique({
@@ -16,7 +23,9 @@ export class InventoryService {
       });
 
       if (!project || project.companyId !== companyId) {
-        throw new ForbiddenException('Project not found or does not belong to your company');
+        throw new ForbiddenException(
+          'Project not found or does not belong to your company',
+        );
       }
     }
 
@@ -58,7 +67,10 @@ export class InventoryService {
     });
   }
 
-  async findAll(companyId: string, filters?: { type?: string; status?: string; projectId?: string }) {
+  async findAll(
+    companyId: string,
+    filters?: { type?: string; status?: string; projectId?: string },
+  ) {
     const where: any = { companyId };
 
     if (filters?.type) {
@@ -101,13 +113,19 @@ export class InventoryService {
     }
 
     if (item.companyId !== companyId) {
-      throw new ForbiddenException('You do not have access to this inventory item');
+      throw new ForbiddenException(
+        'You do not have access to this inventory item',
+      );
     }
 
     return item;
   }
 
-  async update(id: string, companyId: string, updateInventoryItemDto: UpdateInventoryItemDto) {
+  async update(
+    id: string,
+    companyId: string,
+    updateInventoryItemDto: UpdateInventoryItemDto,
+  ) {
     // Verify item belongs to company
     await this.findOne(id, companyId);
 
@@ -118,7 +136,9 @@ export class InventoryService {
       });
 
       if (!project || project.companyId !== companyId) {
-        throw new ForbiddenException('Project not found or does not belong to your company');
+        throw new ForbiddenException(
+          'Project not found or does not belong to your company',
+        );
       }
     }
 

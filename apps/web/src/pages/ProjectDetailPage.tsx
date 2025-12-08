@@ -20,6 +20,7 @@ export default function ProjectDetailPage() {
       loadProject(id);
       loadInventory(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const loadInventory = async (projectId: string) => {

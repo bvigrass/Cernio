@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -15,7 +19,9 @@ export class ProjectsService {
     });
 
     if (!client || client.companyId !== companyId) {
-      throw new ForbiddenException('Client not found or does not belong to your company');
+      throw new ForbiddenException(
+        'Client not found or does not belong to your company',
+      );
     }
 
     // Convert budget/cost to Decimal if provided
@@ -88,7 +94,11 @@ export class ProjectsService {
     return project;
   }
 
-  async update(id: string, companyId: string, updateProjectDto: UpdateProjectDto) {
+  async update(
+    id: string,
+    companyId: string,
+    updateProjectDto: UpdateProjectDto,
+  ) {
     // Verify project belongs to company
     const project = await this.findOne(id, companyId);
 
@@ -99,7 +109,9 @@ export class ProjectsService {
       });
 
       if (!client || client.companyId !== companyId) {
-        throw new ForbiddenException('Client not found or does not belong to your company');
+        throw new ForbiddenException(
+          'Client not found or does not belong to your company',
+        );
       }
     }
 

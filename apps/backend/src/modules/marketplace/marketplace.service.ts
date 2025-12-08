@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { InventoryItemType, InventoryStatus } from '@prisma/client';
+import { InventoryItemType } from '@prisma/client';
 
 @Injectable()
 export class MarketplaceService {

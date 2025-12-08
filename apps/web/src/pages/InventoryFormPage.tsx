@@ -82,6 +82,7 @@ export default function InventoryFormPage() {
       setFormData((prev) => ({ ...prev, projectId: projectIdFromQuery }));
     }
     return () => clearCurrentItem();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isEditMode, projectIdFromQuery]);
 
   useEffect(() => {
