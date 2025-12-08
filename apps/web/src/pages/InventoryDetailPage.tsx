@@ -45,6 +45,7 @@ export default function InventoryDetailPage() {
       [InventoryStatus.LISTED]: 'bg-blue-100 text-blue-800',
       [InventoryStatus.SOLD]: 'bg-red-100 text-red-800',
       [InventoryStatus.SHIPPED]: 'bg-gray-100 text-gray-800',
+      [InventoryStatus.ESTIMATED]: 'bg-purple-100 text-purple-800',
     };
     return colors[status];
   };
