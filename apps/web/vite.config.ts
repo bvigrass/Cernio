@@ -21,4 +21,9 @@ export default defineConfig({
       },
     },
   },
+  test: {
+    globals: true,
+    // Don't fail if no test files found
+    passWithNoTests: true,
+  },
 });
